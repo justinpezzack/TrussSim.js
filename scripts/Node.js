@@ -28,7 +28,7 @@ var Node = fabric.util.createClass(fabric.Circle, {
             connected_members: [] //the members that are connected to the floor beam
         });
     },
-    
+
     toObject: function() {
         return {
             support: this.get('support'),
@@ -106,8 +106,8 @@ Node.prototype.moveMembers = function(canvas) {
 Node.prototype.setForce=function(x,y,canvas){
     this.external_force[0]=x || 0;
     this.external_force[1]=y || 0;
-    roundedX=Math.round(x*100)/100;
-    roundedY=Math.round(y*100)/100;
+    roundedX=x;
+    roundedY=y;
     if(this.forceLine){ //if a force line already exists
         this.forceLine.set({
             x1: this.left,
@@ -138,4 +138,3 @@ Node.prototype.isCarOn=function(){
     }
     return false;
 };
-
