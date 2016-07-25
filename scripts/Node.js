@@ -106,8 +106,8 @@ Node.prototype.moveMembers = function(canvas) {
 Node.prototype.setForce=function(x,y,canvas){
     this.external_force[0]=x || 0;
     this.external_force[1]=y || 0;
-    roundedX=x;
-    roundedY=y;
+    roundedX=Math.round(x*1000)/1000;
+    roundedY=Math.round(y*1000)/100;
     if(this.forceLine){ //if a force line already exists
         this.forceLine.set({
             x1: this.left,

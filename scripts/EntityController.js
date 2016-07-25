@@ -2,7 +2,7 @@ var Grid = require('./Grid');
 var Node=require('./Node');
 var Member=require('./Member');
 
-String.prototype.replaceAll = function(str1, str2, ignore) 
+String.prototype.replaceAll = function(str1, str2, ignore)
 {
     return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\>\-\&])/g,"\\$&"),(ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
 };
@@ -36,7 +36,7 @@ var EntityController = {
     currentDesignCost: 10E12,
 
     exportHash: function(jsonStr) {
-        //replace common phrases with specific characters that will not be used and in an order that is particular        
+        //replace common phrases with specific characters that will not be used and in an order that is particular
         var hashStr = jsonStr;
         var phrases = {"\"nodes\":":'A', "\"support\":":'B', "\"floor_beam\":":'C', "\"top\":":'D', "\"left\":":'E',
                         "\"members\":":'F', "\"x1\":":'G', "\"x2\":":'H', "\"y1\":":'I', "\"y2\":":'J',
@@ -50,11 +50,11 @@ var EntityController = {
         }
 
         for (i = 0; i < 10; i++) {
-            numDec[(i+'.')] = String.fromCharCode(33+i); 
+            numDec[(i+'.')] = String.fromCharCode(33+i);
         }
 
         for (i in phrases) {
-            hashStr = hashStr.replaceAll(i, phrases[i]);     
+            hashStr = hashStr.replaceAll(i, phrases[i]);
         }
 
         //replace the nodeStr part
@@ -62,11 +62,11 @@ var EntityController = {
         hashStr = hashStr.replace(nodeStrRep, '');
 
         for (i in numComb) {
-            hashStr = hashStr.replace(i, numComb[i]);     
+            hashStr = hashStr.replace(i, numComb[i]);
         }
 
         for (i in numDec) {
-            hashStr = hashStr.replace(i, numDec[i]);                 
+            hashStr = hashStr.replace(i, numDec[i]);
         }
 
         return hashStr;
@@ -85,19 +85,19 @@ var EntityController = {
         }
 
         for (i = 0; i < 10; i++) {
-            numDec[(i+'.')] = String.fromCharCode(33+i); 
+            numDec[(i+'.')] = String.fromCharCode(33+i);
         }
 
         for (i in numDec) {
-            jsonStr = jsonStr.replaceAll(numDec[i], i);                 
+            jsonStr = jsonStr.replaceAll(numDec[i], i);
         }
-        
+
         for (i in numComb) {
-            jsonStr = jsonStr.replaceAll(numComb[i], i);     
+            jsonStr = jsonStr.replaceAll(numComb[i], i);
         }
 
         for (i in phrases) {
-            jsonStr = jsonStr.replaceAll(phrases[i], i);     
+            jsonStr = jsonStr.replaceAll(phrases[i], i);
         }
 
         this.import(JSON.parse(jsonStr));
@@ -129,7 +129,7 @@ var EntityController = {
                     exportObj[impProp[i]][j].x2 = Math.round(exportObj[impProp[i]][j].x2*100)/100;
                     exportObj[impProp[i]][j].y1 = Math.round(exportObj[impProp[i]][j].y1*100)/100;
                     exportObj[impProp[i]][j].y2 = Math.round(exportObj[impProp[i]][j].y2*100)/100;
-                }                
+                }
         }
         return exportObj;
     },
@@ -146,7 +146,7 @@ var EntityController = {
             this.addNode(node);
             //draw everyone as they come
             Grid.canvas.add(node);
-            if(node.support) { 
+            if(node.support) {
                 if (i < 1) {
                     this.supportA = node;
                     this.floor_nodes.push(node);
@@ -164,7 +164,7 @@ var EntityController = {
         for (var o in jsonObj.members) {
             member = new Member();
             member.copyProp(jsonObj.members[o]);
-            
+
             //find start node
             for (var j in this.nodes) {
                 if (member.isStartNode(this.nodes[j])) {
@@ -177,7 +177,7 @@ var EntityController = {
                 if (member.isEndNode(this.nodes[k])) {
                     member.end_node=this.nodes[k];
                     this.nodes[k].connected_members.push(member);
-                }       
+                }
             }
             member.stroke='hsla(65, 100%, 60%, 1)';
             Grid.canvas.add(member);
@@ -186,12 +186,12 @@ var EntityController = {
         }
 
         for (var l in this.nodes) {
-            Grid.canvas.bringToFront(this.nodes[l]); 
+            Grid.canvas.bringToFront(this.nodes[l]);
         }
         Grid.canvas.renderAll();
 
     },
-    //A reset function  
+    //A reset function
     clearAllNodes: function() {
         this.nodes=[];
         this.members=[];
@@ -243,7 +243,8 @@ var EntityController = {
                 left: supportA.left+(i+1)*spacing,
                 top: canvasHeight/3,
                 stroke: '#000000',
-                lockMovementY: true
+                lockMovementY: true,
+                external_force: [0,-4.5]
             });
             EntityController.addNode(new_floor_node);
             EntityController.floor_nodes.push(new_floor_node);
