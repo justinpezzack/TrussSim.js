@@ -31,15 +31,15 @@ function calculateSupportReactions(){
 	}
 
 	//calculate support reactions, and otherwise 0 if the car is completely out of the bridge and not touching the supports
-	E.supportA.setForce(0,(actual_weight*(bridge_length_px-distance_a_centroid_px))/(bridge_length_px) || 0,Grid.canvas);
-	E.supportB.setForce(0,(actual_weight*(distance_a_centroid_px))/(bridge_length_px) || 0,Grid.canvas);
+	E.supportA.setForce(0,9 || 0,Grid.canvas);
+	E.supportB.setForce(0,9 || 0,Grid.canvas);
 }
 
 //Calculates the reaction force at the nodes that the car is on using moments
-function calculateWeightDistributionOfCar(){ 
+function calculateWeightDistributionOfCar(){
 	var x, x1, x2, leftDistance, rightDistance;
 	for (var i=0;i<E.floor_nodes.length;i++){
-		if(!E.floor_nodes[i-1]){ //if left support node
+		/*if(!E.floor_nodes[i-1]){ //if left support node
 			if(E.floor_nodes[i].isCarOn() && !E.floor_nodes[i+1].isCarOn()){ //if the car is only on the current node
 				x=E.car.left+E.car_length_px/2-E.floor_nodes[i].left; //portion of car on the right member (position of tail of car minus position of current node)
 				rightDistance=E.floor_nodes[i+1].left-E.floor_nodes[i].left;
@@ -129,7 +129,8 @@ function calculateWeightDistributionOfCar(){
 			else{
 				E.floor_nodes[i].setForce(0,0,Grid.canvas);
 			}
-		}
+		}*/
+			E.floor_nodes[i].setForce(0,-4.5, Grid.canvas);
 	}
 }
 
@@ -143,13 +144,13 @@ function methodOfJoints(){
 		var rowY=[]; //will represent the Fy equation for the node
 		solution.push(-E.nodes[i].external_force[0]); //the external forces in the x direction of the node
 		solution.push(-E.nodes[i].external_force[1]); //the external forces in the y direction o fthe noe
-		
+
 		for(var j=0;j<E.members.length;j++){ //iterate through all of the members that exist
 			E.members[j].calcLength();
 			E.members[j].calcUnitVector();
 
 			var connected=false; //check if the member is connected to the node
-			for(var k=0;k<E.nodes[i].connected_members.length;k++){ 
+			for(var k=0;k<E.nodes[i].connected_members.length;k++){
 				if(E.members[j]===E.nodes[i].connected_members[k]){ //if the member is connected to the node
 					if(E.nodes[i].connected_members[k].x1===E.nodes[i].left && E.nodes[i].connected_members[k].y1===E.nodes[i].top){ //if the start of the member is connected to the node
 						rowX.push(-E.nodes[i].connected_members[k].unit_vector[0]);
@@ -172,7 +173,7 @@ function methodOfJoints(){
 		force_matrix.push(rowY);
 	}
 
-	//eliminating last 3 equation since we have 2N equations and have 2N-3 members, thus we have 3 extra equations 
+	//eliminating last 3 equation since we have 2N equations and have 2N-3 members, thus we have 3 extra equations
 	force_matrix.pop();
 	force_matrix.pop();
 	force_matrix.pop();
@@ -183,7 +184,7 @@ function methodOfJoints(){
 	var forces=numeric.solve(force_matrix, solution, false); //solving for the forces
 
 	E.designPass=true; //for checking whether a design meets the criteria
-	
+
 	//applying the force value to the specified member, as well as checking if its under the constraints
 	for(i=0;i<E.members.length;i++){
 		E.members[i].setForce(forces[i],E);

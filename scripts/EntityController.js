@@ -244,7 +244,7 @@ var EntityController = {
                 top: canvasHeight/3,
                 stroke: '#000000',
                 lockMovementY: true,
-                external_force: [0,-4.5]
+                external_force: [0,0]
             });
             EntityController.addNode(new_floor_node);
             EntityController.floor_nodes.push(new_floor_node);
